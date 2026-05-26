@@ -5,8 +5,8 @@ public class GoalTrigger : MonoBehaviour
     #region Public
 
     #endregion
-    //
-    //
+    
+    
     #region Unity API
 
     private void OnTriggerEnter(Collider other)
@@ -18,21 +18,16 @@ public class GoalTrigger : MonoBehaviour
         // Optionnel : ignorer si la course n’a pas commencé
         if (!car._isRacing) return;
         _hasTriggered = true;
-        Debug.Log($"[Goal] Arrivée au goal {_goalIndex} !");
+        Debug.Log($"[Goal] You reach the goal {_goalIndex} !");
         if (GameManager.Instance != null)
-            GameManager.Instance.OnReachPoint();
+            GameManager.Instance.OnReachPoint(_goalIndex);
     }
 
     public void ResetTrigger() => _hasTriggered = false;
 
     #endregion
-    // space between region = 2
-    //
-    #region Main API
+    
 
-    #endregion
-    //
-    // 
     #region Private & Protected
 
     [SerializeField] private int _goalIndex = 0;

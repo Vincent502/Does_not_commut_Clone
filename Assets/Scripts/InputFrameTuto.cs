@@ -3,7 +3,7 @@
 /// We record INPUTS (not position) to ensure a physics-accurate replay.
 /// </summary>
 [System.Serializable]
-public struct InputFrame
+public struct InputFrameTuto
 {
     public float vertical;
     public float horizontal;

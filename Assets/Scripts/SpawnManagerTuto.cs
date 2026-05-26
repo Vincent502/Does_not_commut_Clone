@@ -51,7 +51,7 @@ public class SpawnManagerTuto : MonoBehaviour
         Transform spawn = spawnPoints[index];
         GameObject ghost = Instantiate(ghostCarPrefab, spawn.position, spawn.rotation);
 
-        ReplayPlayer replay = ghost.GetComponent<ReplayPlayer>();
+        ReplayPlayerTuto replay = ghost.GetComponent<ReplayPlayerTuto>();
         if (replay != null)
             replay.StartReplay(inputs);
         else

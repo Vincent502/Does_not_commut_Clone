@@ -47,7 +47,7 @@ public class GameManagerTuto : MonoBehaviour
         }
 
         activePlayerCar.GetComponent<CarController>()?.EnablePlayerControl();
-        activePlayerCar.GetComponent<ReplayRecorder>()?.StartRecording();
+        //activePlayerCar.GetComponent<ReplayRecorder>()?.StartRecording();
     }
 
     /// <summary>
@@ -66,7 +66,7 @@ public class GameManagerTuto : MonoBehaviour
 
         // 1. Stop player control
         car.DisablePlayerControl();
-        recorder.StopRecording();
+        //recorder.StopRecording();
 
         // 2. Award time bonus
         TimerManager.Instance.AddTime(timeBonusPerGoal);
@@ -96,7 +96,7 @@ public class GameManagerTuto : MonoBehaviour
         if (activePlayerCar != null)
         {
             activePlayerCar.GetComponent<CarController>()?.DisablePlayerControl();
-            activePlayerCar.GetComponent<ReplayRecorder>()?.StopRecording();
+            //activePlayerCar.GetComponent<ReplayRecorder>()?.StopRecording();
         }
 
         Debug.Log("[GameManager] GAME OVER!");

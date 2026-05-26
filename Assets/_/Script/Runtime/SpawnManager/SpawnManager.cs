@@ -37,11 +37,21 @@ public class SpawnManager : MonoBehaviour
             _cameraFollow.SetTarget(PlayerCar.transform);
     }
 
+    public CarMovement SpawnPlayerCar(int index)
+    {
+        var spawn = _spawnPoints[index];
+        var go = Instantiate(_playerCarPrefab, spawn.position, spawn.rotation);
+        // caméra, rigidbody reset...
+        return go.GetComponent<CarMovement>();
+    }
+
     #endregion
 
     #region Private & Protected
 
     [SerializeField] private GameObject _playerCarPrefab;
     [SerializeField] private CameraFlollow _cameraFollow;
+    [SerializeField] private Transform[] _spawnPoints;
+
     #endregion
 }

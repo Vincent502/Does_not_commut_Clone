@@ -9,9 +9,9 @@ using InputSystem;
 /// Reads input from the New Input System (Player/Move action).
 /// </summary>
 [RequireComponent(typeof(CarController))]
-public class ReplayRecorder : MonoBehaviour
+public class ReplayRecorderTuto : MonoBehaviour
 {
-    public List<InputFrame> RecordedInputs { get; private set; } = new List<InputFrame>();
+    public List<InputFrameTuto> RecordedInputs { get; private set; } = new List<InputFrameTuto>();
 
     private bool isRecording = false;
     private InputSystem_Actions _actions;
@@ -42,10 +42,10 @@ public class ReplayRecorder : MonoBehaviour
 
         Vector2 move = _actions.Player.Move.ReadValue<Vector2>();
 
-        RecordedInputs.Add(new InputFrame
-        {
-            vertical   = move.y,
-            horizontal = move.x
-        });
+        //RecordedInputs.Add(new InputFrame
+        //{
+        //    vertical   = move.y,
+        //    horizontal = move.x
+        //});
     }
 }

@@ -6,7 +6,7 @@ using UnityEngine;
 /// Must be placed on the ghost car prefab.
 /// </summary>
 [RequireComponent(typeof(CarController))]
-public class ReplayPlayer : MonoBehaviour
+public class ReplayPlayerTuto : MonoBehaviour
 {
     private List<InputFrame> replayData;
     private CarController car;
@@ -42,7 +42,7 @@ public class ReplayPlayer : MonoBehaviour
         }
 
         InputFrame frame = replayData[currentFrame];
-        car.ApplyMovement(frame.vertical, frame.horizontal);
+        //car.ApplyMovement(frame.vertical, frame.horizontal);
         currentFrame++;
     }
 }

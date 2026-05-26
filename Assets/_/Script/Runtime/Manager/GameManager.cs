@@ -1,9 +1,10 @@
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
     #region Public
-
+    
     public static GameManager Instance { get; private set; }
 
     public float _currentTime { get; private set; }
@@ -36,13 +37,6 @@ public class GameManager : MonoBehaviour
         CarMovement.OnPlayerSelectedStart += StartRace;
     }
 
-    private void Update()
-    {
-        if (!_raceStarted) return;
-        if (_currentTime <= 0) return;
-
-        _currentTime -= Time.deltaTime;
-    }
 
     private void OnDisable()
     {
@@ -65,33 +59,64 @@ public class GameManager : MonoBehaviour
 
         if (_playerCar == null)
         {
-            Debug.LogWarning("[GameManager] No player car � check SpawnManager prefab.");
+            Debug.LogWarning("[GameManager] No player car — check SpawnManager prefab.");
             return;
         }
 
-        Debug.Log("La course commence !");
+        Debug.Log("Start run !");
         _playerCar._isRacing = true;
+        GetRecorder()?.StartRecording();
         Time.timeScale = 1f;
+        _timer.StartTimer();
     }
 
-    public void OnReachPoint()
+    public void OnTimerExpired()
     {
-        Debug.Log("[GameManager] Le joueur a atteint le goal !");
+        if (_gameOver) return;
+        _gameOver = true;
 
         if (_playerCar != null)
             _playerCar._isRacing = false;
+
+        //  Time.timeScale = 0f;  // optionnel : freeze total
+        Debug.Log("[GameManager] GAME OVER — time's off !");
     }
+
+    public void OnReachPoint(int goalIndex)
+    {
+        Debug.Log("[GameManager] player reach the goal !");
+
+        if (_playerCar != null)
+            _playerCar._isRacing = false;
+
+        if (_gameOver) return;
+        // multi car next here
+        var recorder = GetRecorder();
+        recorder?.StopRecording();
+        if (recorder != null)
+            Debug.Log($"[Replay] Voiture {_currentCarIndex} → {recorder.RecordedInputs.Count} frames");
+
+
+        _timer.PauseTime();
+    }
+
+    private ReplayRecorder GetRecorder() =>
+    _playerCar != null ? _playerCar.GetComponent<ReplayRecorder>() : null;
 
     #endregion
 
     #region Private & Protected
 
-    [Space(5), Header("R�f�rences")]
+    [Space(5), Header("Références")]
     [SerializeField] private SpawnManager _spawnManager;
+    [SerializeField] private LevelTimer _timer;
 
     private CarMovement _playerCar;
     private float m_initialTimer = 60f;
     private bool _raceStarted;
+    private bool _gameOver;
+    private int _currentCarIndex = 0;
+    private readonly List<List<InputFrame>> _routes = new();
 
     #endregion
 }
