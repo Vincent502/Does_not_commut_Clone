@@ -67505,6 +67505,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SpawnManager
   _playerCarPrefab: {fileID: 5233288535460607166, guid: a401fdb70b833c44aa0322de227a3c00, type: 3}
+  _cameraFollow: {fileID: 1191575688}
 --- !u!4 &1836332704
 Transform:
   m_ObjectHideFlags: 0
