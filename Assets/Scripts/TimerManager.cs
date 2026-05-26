@@ -56,7 +56,7 @@ public class TimerManager : MonoBehaviour
         {
             CurrentTime = 0f;
             isRunning = false;
-            GameManager.Instance.GameOver();
+            //GameManager.Instance.GameOver();
         }
     }
 

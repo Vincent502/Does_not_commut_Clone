@@ -8,7 +8,7 @@ using UnityEngine;
 ///   - Add a BoxCollider with "Is Trigger" enabled
 ///   - Set goalIndex to match the index of the associated SpawnPoint
 /// </summary>
-public class GoalTrigger : MonoBehaviour
+public class GoalTriggerTuto : MonoBehaviour
 {
     [Tooltip("Must match the SpawnPoint index of the expected car")]
     public int goalIndex = 0;
@@ -21,7 +21,7 @@ public class GoalTrigger : MonoBehaviour
 
         if (car != null && recorder != null)
         {
-            GameManager.Instance.OnPlayerReachedGoal(car, recorder, goalIndex);
+            //GameManager.Instance.OnPlayerReachedGoal(car, recorder, goalIndex);
         }
     }
 }

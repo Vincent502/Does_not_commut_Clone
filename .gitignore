@@ -66,6 +66,9 @@ DerivedData/
 # Obj-C/Swift specific
 *.hmap
 
+#cursor file path
+.cursor/
+
 # App packaging
 *.ipa
 *.dSYM.zip

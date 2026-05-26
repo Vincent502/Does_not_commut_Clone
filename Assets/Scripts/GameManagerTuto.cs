@@ -9,7 +9,7 @@ using UnityEngine;
 ///   - Create a "GameManager" GameObject in the scene
 ///   - Set timeBonusPerGoal (time added on each successful arrival)
 /// </summary>
-public class GameManager : MonoBehaviour
+public class GameManagerTuto : MonoBehaviour
 {
     public static GameManager Instance { get; private set; }
 
@@ -24,7 +24,7 @@ public class GameManager : MonoBehaviour
     void Awake()
     {
         if (Instance != null && Instance != this) { Destroy(gameObject); return; }
-        Instance = this;
+        //Instance = this;
     }
 
     void Start()
@@ -37,7 +37,7 @@ public class GameManager : MonoBehaviour
 
     private void SpawnNextPlayerCar()
     {
-        activePlayerCar = SpawnManager.Instance.SpawnPlayerCar(currentCarIndex);
+        activePlayerCar = SpawnManagerTuto.Instance.SpawnPlayerCar(currentCarIndex);
 
         if (activePlayerCar == null)
         {
@@ -73,7 +73,7 @@ public class GameManager : MonoBehaviour
 
         // 3. Spawn a ghost car at the original spawn point with the recorded inputs
         List<InputFrame> capturedInputs = new List<InputFrame>(recorder.RecordedInputs);
-        GameObject ghost = SpawnManager.Instance.SpawnGhostCar(currentCarIndex, capturedInputs);
+        GameObject ghost = SpawnManagerTuto.Instance.SpawnGhostCar(currentCarIndex, capturedInputs);
         if (ghost != null) ghostCars.Add(ghost);
 
         // 4. Destroy the player car (the ghost takes over from the spawn point)

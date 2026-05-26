@@ -13,9 +13,9 @@ using UnityEngine;
 /// PlayerCarPrefab must have: Rigidbody, BoxCollider, CarController, ReplayRecorder
 /// GhostCarPrefab must have:  Rigidbody, BoxCollider, CarController, ReplayPlayer
 /// </summary>
-public class SpawnManager : MonoBehaviour
+public class SpawnManagerTuto : MonoBehaviour
 {
-    public static SpawnManager Instance { get; private set; }
+    public static SpawnManagerTuto Instance { get; private set; }
 
     [Header("Prefabs")]
     public GameObject playerCarPrefab;
