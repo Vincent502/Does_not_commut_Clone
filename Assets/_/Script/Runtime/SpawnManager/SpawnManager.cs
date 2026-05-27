@@ -22,13 +22,6 @@ public class SpawnManager : MonoBehaviour
 
         PlayerCar = SpawnPlayerCar(_currentSpawnIndex);
 
-        //GameObject instance = Instantiate(
-        //    _playerCarPrefab,
-        //    transform.position,
-        //    transform.rotation
-        //);
-
-        //PlayerCar = instance.GetComponent<CarMovement>();
         if (PlayerCar == null)
             Debug.LogError("[SpawnManager] Player car prefab is missing CarMovement.");
 
