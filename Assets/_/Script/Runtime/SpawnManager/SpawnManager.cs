@@ -46,24 +46,29 @@ public class SpawnManager : MonoBehaviour
 
     #region Main API
 
-    public Transform GetSpawnPoint(int index) => _spawnPoints[index];
-
-    public GameObject SpawnGhostCar(Vector3 pos,Quaternion rot, List<InputFrame> inputs)
+    public GosthReplay SpawnGhostCar(Vector3 pos, Quaternion rot, List<InputFrame> inputs)
     {
-        
         var go = Instantiate(_ghostCarPrefab, pos, rot);
         var replay = go.GetComponent<GosthReplay>();
-        replay?.StartReplay(new List<InputFrame>(inputs));
-        return go;
+        replay?.LoadRoute(new List<InputFrame>(inputs));
+        return replay; 
     }
 
     public CarMovement SpawnPlayerCar(int index)
     {
         var spawn = _spawnPoints[index];
         var go = Instantiate(_playerCarPrefab, spawn.position, spawn.rotation);
-        // caméra, rigidbody reset...
         return go.GetComponent<CarMovement>();
     }
+
+    public void FocusCameraOn(Transform target)
+    {
+        if (_cameraFollow != null) _cameraFollow.SetTarget(target);
+    }
+
+    public int SpawnPointCount => _spawnPoints.Length;
+
+    public Transform GetSpawnPoint(int index) => _spawnPoints[index];
 
     #endregion
 

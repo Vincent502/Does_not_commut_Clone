@@ -35,9 +35,17 @@ public class GosthReplay : MonoBehaviour
     //
     #region Main API
 
-    public void StartReplay(List<InputFrame> data)
+    public void LoadRoute(List<InputFrame> data)
     {
         _data = new List<InputFrame>(data);
+        _frameIndex = 0;
+        _isReplaying = false;
+        _car.SetReplayDriven(false);
+    }
+
+    public void StartReplay()
+    {
+        if (_data == null || _data.Count == 0) return;
         _frameIndex = 0;
         _isReplaying = true;
         _car.SetReplayDriven(true);

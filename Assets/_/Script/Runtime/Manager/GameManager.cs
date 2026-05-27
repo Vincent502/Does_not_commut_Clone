@@ -54,21 +54,44 @@ public class GameManager : MonoBehaviour
 
     private void StartRace()
     {
+        if (_gameOver) return;
         if (_raceStarted) return;
+        if (_playerCar == null) return;
+
         _raceStarted = true;
-
-        if (_playerCar == null)
-        {
-            Debug.LogWarning("[GameManager] No player car — check SpawnManager prefab.");
-            return;
-        }
-
-        Debug.Log("Start run !");
         _playerCar._isRacing = true;
+
         GetRecorder()?.StartRecording();
+
+        ClearGhosts();
+        RebuildGhostsFromRoutes();
+
+        foreach (var ghost in _activeGhosts)
+            ghost.StartReplay();
+        if(_currentCarIndex == 0) _timer.StartTimer();
+        else _timer.ResumeTime();
         Time.timeScale = 1f;
-        _timer.StartTimer();
     }
+
+    private void ClearGhosts()
+    {
+        foreach (var g in _activeGhosts)
+            if (g != null) Destroy(g.gameObject);
+        _activeGhosts.Clear();
+    }
+
+    private void RebuildGhostsFromRoutes()
+    {
+        for (int i = 0; i < _routes.Count; i++)
+        {
+            var spawn = _spawnManager.GetSpawnPoint(i);
+            var ghost = _spawnManager.SpawnGhostCar(spawn.position, spawn.rotation, _routes[i]);
+            if (ghost != null) _activeGhosts.Add(ghost);
+        }
+    }
+
+    private ReplayRecorder GetRecorder() =>
+    _playerCar != null ? _playerCar.GetComponent<ReplayRecorder>() : null;
 
     public void OnTimerExpired()
     {
@@ -78,41 +101,64 @@ public class GameManager : MonoBehaviour
         if (_playerCar != null)
             _playerCar._isRacing = false;
 
-        //  Time.timeScale = 0f;  // optionnel : freeze total
+        Time.timeScale = 0f;
         Debug.Log("[GameManager] GAME OVER — time's off !");
     }
 
     public void OnReachPoint(int goalIndex)
     {
-        Debug.Log("[GameManager] player reach the goal !");
-
-        if (_playerCar != null)
-            _playerCar._isRacing = false;
-
+        
         if (_gameOver) return;
-        // multi car next here
+        if (_playerCar == null) return;
+        if (goalIndex != _currentCarIndex) return; 
+                                                   
+        _playerCar._isRacing = false;
         var recorder = GetRecorder();
         recorder?.StopRecording();
+        _timer.PauseTime();
+        if (recorder == null) return;
 
-        _routes.Add(new List<InputFrame>(recorder.RecordedInputs));
+        
+        var captured = new List<InputFrame>(recorder.RecordedInputs);
 
-        var spawn = _spawnManager.GetSpawnPoint(goalIndex); // ou _currentCarIndex selon ton flow
-        _spawnManager.SpawnGhostCar(
-            spawn.position,
-            spawn.rotation,
-            recorder.RecordedInputs
-        );
+        _routes.Add(captured);
 
-        if (recorder != null)
+        var ghostSpawn = _spawnManager.GetSpawnPoint(_currentCarIndex);
+
+        var ghost = _spawnManager.SpawnGhostCar(ghostSpawn.position, ghostSpawn.rotation, captured);
+        if (ghost != null) _activeGhosts.Add(ghost);
+
+        Destroy(_playerCar.gameObject);
+        _timer.AddTime(10);
+        _playerCar = null;
+
+        
+        _currentCarIndex++;
+
+        if (_currentCarIndex >= _spawnManager.SpawnPointCount)
         {
-            Debug.Log($"[Replay] Voiture {_currentCarIndex} → {recorder.RecordedInputs.Count} frames");
+            Debug.Log("[GameManager] All routes completed! WIN");
+            _gameOver = true;          
+            _raceStarted = false;
+            _timer.PauseTime();        
+            Time.timeScale = 0f;       
+            return;
         }
 
-        _timer.PauseTime();
+        _playerCar = _spawnManager.SpawnPlayerCar(_currentCarIndex);
+        if (_playerCar == null)
+        {
+            Debug.LogError("[GameManager] Failed to spawn next player car.");
+            return;
+        }
+        
+        _playerCar._isRacing = false;   
+        _raceStarted = false;           
+        _spawnManager.FocusCameraOn(_playerCar.transform); 
+                                                           
     }
 
-    private ReplayRecorder GetRecorder() =>
-    _playerCar != null ? _playerCar.GetComponent<ReplayRecorder>() : null;
+    public int CurrentCarIndex => _currentCarIndex;
 
     #endregion
 
@@ -127,7 +173,11 @@ public class GameManager : MonoBehaviour
     private bool _raceStarted;
     private bool _gameOver;
     private int _currentCarIndex = 0;
+
     private readonly List<List<InputFrame>> _routes = new();
+    private readonly List<GosthReplay> _activeGhosts = new();
+
+
 
     #endregion
 }

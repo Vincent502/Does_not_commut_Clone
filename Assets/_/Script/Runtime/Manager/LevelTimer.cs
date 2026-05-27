@@ -43,7 +43,11 @@ public class LevelTimer : MonoBehaviour
         _isRunning = true;
         RefreshUI();
     }
-
+    public void ResumeTime()
+    {
+        if (CurrentTime > 0f)
+            _isRunning = true;
+    }
     private void RefreshUI()
     {
         if (_timerText != null)
