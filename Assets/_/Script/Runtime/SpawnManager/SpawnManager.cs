@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class SpawnManager : MonoBehaviour
@@ -18,13 +20,15 @@ public class SpawnManager : MonoBehaviour
             return;
         }
 
-        GameObject instance = Instantiate(
-            _playerCarPrefab,
-            transform.position,
-            transform.rotation
-        );
+        PlayerCar = SpawnPlayerCar(_currentSpawnIndex);
 
-        PlayerCar = instance.GetComponent<CarMovement>();
+        //GameObject instance = Instantiate(
+        //    _playerCarPrefab,
+        //    transform.position,
+        //    transform.rotation
+        //);
+
+        //PlayerCar = instance.GetComponent<CarMovement>();
         if (PlayerCar == null)
             Debug.LogError("[SpawnManager] Player car prefab is missing CarMovement.");
 
@@ -35,6 +39,22 @@ public class SpawnManager : MonoBehaviour
         }
         if (PlayerCar != null && _cameraFollow != null)
             _cameraFollow.SetTarget(PlayerCar.transform);
+    }
+
+    #endregion
+
+
+    #region Main API
+
+    public Transform GetSpawnPoint(int index) => _spawnPoints[index];
+
+    public GameObject SpawnGhostCar(Vector3 pos,Quaternion rot, List<InputFrame> inputs)
+    {
+        
+        var go = Instantiate(_ghostCarPrefab, pos, rot);
+        var replay = go.GetComponent<GosthReplay>();
+        replay?.StartReplay(new List<InputFrame>(inputs));
+        return go;
     }
 
     public CarMovement SpawnPlayerCar(int index)
@@ -52,6 +72,8 @@ public class SpawnManager : MonoBehaviour
     [SerializeField] private GameObject _playerCarPrefab;
     [SerializeField] private CameraFlollow _cameraFollow;
     [SerializeField] private Transform[] _spawnPoints;
+    [SerializeField] private GameObject _ghostCarPrefab;
+    private int _currentSpawnIndex; 
 
     #endregion
 }

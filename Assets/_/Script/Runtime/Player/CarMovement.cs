@@ -60,14 +60,13 @@ public class CarMovement : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (!_isRacing) 
+        if (_isReplayDriven) return;
+        if (!_isRacing)
         {
             ApplyMovement(0f);
-            return; 
+            return;
         }
-
         _moveInput = m_actions.Player.Move.ReadValue<Vector2>();
-
         ApplyTurn(_moveInput.x);
         ApplyMovement(1f);
     }
@@ -110,7 +109,13 @@ public class CarMovement : MonoBehaviour
         }
     }
 
-    
+    public void ApplyReplayFrame(float steer)
+    {
+        ApplyTurn(steer);
+        ApplyMovement(1f);
+    }
+
+    public void SetReplayDriven(bool value) => _isReplayDriven = value;
 
     #endregion
 
@@ -118,6 +123,7 @@ public class CarMovement : MonoBehaviour
 
     private Rigidbody m_rb;
     private InputSystem_Actions m_actions;
-  
+    private bool _isReplayDriven = false;
+    
     #endregion
 }

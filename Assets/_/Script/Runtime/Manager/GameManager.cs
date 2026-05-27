@@ -93,9 +93,20 @@ public class GameManager : MonoBehaviour
         // multi car next here
         var recorder = GetRecorder();
         recorder?.StopRecording();
-        if (recorder != null)
-            Debug.Log($"[Replay] Voiture {_currentCarIndex} → {recorder.RecordedInputs.Count} frames");
 
+        _routes.Add(new List<InputFrame>(recorder.RecordedInputs));
+
+        var spawn = _spawnManager.GetSpawnPoint(goalIndex); // ou _currentCarIndex selon ton flow
+        _spawnManager.SpawnGhostCar(
+            spawn.position,
+            spawn.rotation,
+            recorder.RecordedInputs
+        );
+
+        if (recorder != null)
+        {
+            Debug.Log($"[Replay] Voiture {_currentCarIndex} → {recorder.RecordedInputs.Count} frames");
+        }
 
         _timer.PauseTime();
     }
