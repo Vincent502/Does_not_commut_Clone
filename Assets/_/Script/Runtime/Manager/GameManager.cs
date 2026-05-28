@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
+using InputSystem;
 
 public class GameManager : MonoBehaviour
 {
@@ -13,13 +14,14 @@ public class GameManager : MonoBehaviour
 
     #region Unity API
 
-    void Awake()
+    private void Awake()
     {
         if (Instance == null) Instance = this;
         else Destroy(gameObject);
+        m_interacte = new InputSystem_Actions();
     }
 
-    void Start()
+    private void Start()
     {
         if (_spawnManager != null)
             _playerCar = _spawnManager.PlayerCar;
@@ -32,15 +34,62 @@ public class GameManager : MonoBehaviour
         _raceStarted = false;
     }
 
+    private void Update()
+    {
+        if (m_interacte.Player.Interact.WasPerformedThisFrame())
+        {
+            _timer.StartRewindTime();
+            foreach (var ghost in _activeGhosts)
+                ghost?.StartRewind();
+            var playerRecorder = GetRecorder();
+            if (playerRecorder != null)
+            {
+                _playerCar._isRacing = false; 
+                playerRecorder.StopRecording(); 
+                playerRecorder.StartRewind();   
+            }
+            _isRewindingAll = true;
+            _raceStarted = true;      
+            _playerCar._isRacing = false;
+                        
+        }
+        if (_isRewindingAll)
+        {
+            bool playerDone = true;
+            var recorder = GetRecorder();
+            if (recorder != null) playerDone = !recorder.IsRewinding;
+
+            bool ghostsDone = true;
+            foreach (var ghost in _activeGhosts)
+            {
+                if (ghost != null && ghost.IsRewinding)
+                {
+                    ghostsDone = false;
+                    break;
+                }
+            }
+
+            if (playerDone && ghostsDone)
+            {
+                _timer.StopRewindTime();
+                _isRewindingAll = false;
+                _raceStarted = false;      
+                if (_playerCar != null) _playerCar._isRacing = false; 
+            }
+        }
+    }
+
     private void OnEnable()
     {
         CarMovement.OnPlayerSelectedStart += StartRace;
+        m_interacte.Enable();
     }
 
 
     private void OnDisable()
     {
         CarMovement.OnPlayerSelectedStart -= StartRace;
+        m_interacte.Disable();
     }
 
     private void OnDestroy()
@@ -60,6 +109,8 @@ public class GameManager : MonoBehaviour
 
         _raceStarted = true;
         _playerCar._isRacing = true;
+
+        _timer.StopRewindTime(); 
 
         GetRecorder()?.StartRecording();
 
@@ -173,9 +224,12 @@ public class GameManager : MonoBehaviour
     private bool _raceStarted;
     private bool _gameOver;
     private int _currentCarIndex = 0;
+    private bool _isRewindingAll = false;
 
     private readonly List<List<InputFrame>> _routes = new();
     private readonly List<GosthReplay> _activeGhosts = new();
+
+    private InputSystem_Actions m_interacte;
 
 
 

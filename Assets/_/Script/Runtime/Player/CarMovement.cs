@@ -26,14 +26,17 @@ public class CarMovement : MonoBehaviour
 
     public static event Action OnPlayerSelectedStart;
 
+    public Rigidbody Rb => m_rb;
+
     [HideInInspector] public bool _isRacing = false;
 
     #endregion
 
     #region Unity API
 
-    void Awake()
+    private void Awake()
     {
+        
         m_rb = GetComponent<Rigidbody>();
         m_rb.constraints = RigidbodyConstraints.FreezePositionY
                        | RigidbodyConstraints.FreezeRotationX
@@ -109,10 +112,10 @@ public class CarMovement : MonoBehaviour
         }
     }
 
-    public void ApplyReplayFrame(float steer)
+    public void ApplyReplayFrame(float steer, float move)
     {
         ApplyTurn(steer);
-        ApplyMovement(1f);
+        ApplyMovement(move);
     }
 
     public void SetReplayDriven(bool value) => _isReplayDriven = value;

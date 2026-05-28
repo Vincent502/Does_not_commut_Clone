@@ -12,7 +12,7 @@ public class SpawnManager : MonoBehaviour
 
     #region Unity API
 
-    void Awake()
+    private void Awake()
     {
         if (_playerCarPrefab == null)
         {
